@@ -45,7 +45,7 @@ The Peer Evaluation Automation Tool uses Google Apps Script to:
 
 ### Step 2: Set Up the Apps Script Project
 1. Open your Google Sheet.
-2. Navigate to **Extensions > Apps Script**.
+2. Navigate to **Extensions > Apps Script**.  
    <img src="screenshots/step2-appsscript.png" alt="Apps Script Extension" />
 3. In the Apps Script editor:
    - Replace the default code in `Code.gs` with the contents of `Code.js` from this repository.
@@ -62,7 +62,7 @@ The Peer Evaluation Automation Tool uses Google Apps Script to:
 1. In the Apps Script editor, click the `+` icon next to "Services" on the left.
 2. Select **Google Classroom API** and click **Add**.
 
-<p align="center"><img src="screenshots/step3-classrom_api.png" alt="Enable Classroom API" /></p>
+<p align="center"><img src="screenshots/step3-classroom_api.png" alt="Enable Classroom API" width="400"/></p>
 
 ### Step 4: Deploy the Web App
 1. In the Apps Script editor, click **Deploy > New Deployment**.
@@ -77,7 +77,7 @@ The Peer Evaluation Automation Tool uses Google Apps Script to:
    - Click **Allow** to permit access to Sheets, Forms, Drive, and Classroom.
 6. Copy the **Web App URL** shown after deployment.
 
-<p align="center"><img src="screenshots/step4-deploy.png" alt="Deploy Web App" /></p>
+<p align="center"><img src="screenshots/step4-deploy.png" alt="Deploy Web App" width="600"/></p>
 
 ## Usage
 
@@ -133,7 +133,7 @@ Fill out these sections in the web app:
 1. Open each Google Form from the Drive folder.
 2. Go to **Settings > Responses** and set **Collect email addresses** to **Verified**. This links responses to student identities.
 
-<p align="center"><img src="screenshots/step5-verified.png" alt="Set Responses to Verified" /></p>
+<p align="center"><img src="screenshots/step5-verified.png" alt="Set Responses to Verified" width="600"/></p>
 
 ### Step 6: Gather Responses
 1. Students complete the forms through Google Classroom assignments.
@@ -155,7 +155,7 @@ The evaluation table in your Google Sheet (starting at the specified column, e.g
 - **Feedback** (if enabled): General feedback from students.
 - **Last Submitted**: Timestamp of the latest submission.
 
-<p align="center"><img src="screenshots/spreadsheet_output_sample.png" alt="Spreadsheet Output Sample" /></p>
+<p align="center"><img src="screenshots/spreadsheet_output_sample.png" alt="Spreadsheet Output Sample" width="800"/></p>
 
 ## Troubleshooting
 
