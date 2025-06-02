@@ -1,0 +1,908 @@
+<!--
+  @license
+  Copyright 2025 Daniel Joseph Sapit
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+  @version 1.0.0
+  @file WebApp.html
+  @description Web interface for the Peer Evaluation Automation Tool, used with
+  Code.js to configure and execute Google Forms and Classroom automation.
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <base target="_top">
+  <style>
+    body {
+      font-family: "Roboto", sans-serif;
+      margin: 0 5vw 20px 5vw;
+      background-color: #f0f0f0;
+      color: #222;
+      font-size: 16px;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 20px 4vw;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 1200px;
+      margin: 20px auto;
+      border-radius: 8px;
+    }
+
+    h1 {
+      color: #4CAF50;
+      text-align: center;
+      margin-bottom: 0.5em;
+    }
+
+    h2 {
+      color: #333;
+      border-bottom: 2px solid #4CAF50;
+      padding-bottom: 10px;
+      margin-top: 30px;
+      text-align: center;
+      font-size: 1.5em;
+    }
+
+    h3 {
+      color: #444;
+      margin-top: 20px;
+      font-size: 1.2em;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #555;
+      font-size: 0.95em;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    textarea {
+      font-size: 0.9em;
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    button,
+    .copy-button,
+    .action-button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1em;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .copy-button {
+      font-size: 0.8em;
+      padding: 5px 10px;
+      margin-left: 10px;
+      margin-top: 0;
+      vertical-align: middle;
+      background-color: #007bff;
+    }
+
+    .action-button {
+      font-size: 0.9em;
+      padding: 8px 15px;
+      margin-right: 10px;
+      margin-bottom: 5px;
+    }
+
+    .action-button.secondary {
+      background-color: #6c757d;
+    }
+
+    .action-button.danger {
+      background-color: #dc3545;
+    }
+
+    .copy-button:hover {
+      background-color: #0056b3;
+    }
+
+    button:disabled,
+    .action-button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #45a049;
+    }
+
+    .action-button.secondary:hover:not(:disabled) {
+      background-color: #5a6268;
+    }
+
+    .action-button.danger:hover:not(:disabled) {
+      background-color: #c82333;
+    }
+
+    #statusMessage {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.95em;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+
+    .info {
+      background-color: #e7f3fe;
+      border-left: 6px solid #2196F3;
+      color: #004085;
+    }
+
+    .success {
+      background-color: #d4edda;
+      border-left: 6px solid #28a745;
+      color: #155724;
+    }
+
+    .error {
+      background-color: #f8d7da;
+      border-left: 6px solid #dc3545;
+      color: #721c24;
+    }
+
+    p,
+    ol li {
+      line-height: 1.6;
+      font-size: 0.95em;
+    }
+
+    ol {
+      margin-left: 20px;
+      padding-left: 10px;
+    }
+
+    .preview-section {
+      margin-top: 25px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+    }
+
+    .preview-section label {
+      font-size: 0.9em;
+      color: #333;
+      margin-bottom: 3px;
+    }
+
+    .preview-section ul {
+      list-style-type: decimal;
+      padding-left: 20px;
+      max-height: 120px;
+      overflow-y: auto;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding-top: 8px;
+      padding-bottom: 8px;
+      border-radius: 3px;
+      margin-top: 5px;
+    }
+
+    .preview-section li,
+    .preview-section p {
+      font-size: 0.85em;
+      color: #555;
+      margin-bottom: 4px;
+      word-wrap: break-word;
+    }
+
+    .preview-section p {
+      margin-top: 8px;
+      padding: 8px;
+      border-radius: 3px;
+      background-color: #fff;
+      border: 1px solid #eee;
+    }
+
+    .preview-section span.range-display {
+      font-weight: normal;
+      color: #007bff;
+      font-style: italic;
+    }
+
+    .preview-section .cell-status-value {
+      font-style: italic;
+      color: #17a2b8;
+    }
+
+    .preview-section .status-ok {
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    .preview-section .status-warning {
+      color: #ffc107;
+      font-weight: bold;
+    }
+
+    .preview-section .status-error {
+      color: #dc3545;
+      font-weight: bold;
+    }
+
+    .toast {
+      visibility: hidden;
+      min-width: 300px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 5px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1000;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 30px;
+      font-size: 1em;
+      box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.25);
+    }
+
+    .toast.show {
+      visibility: visible;
+      -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s forwards;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s forwards;
+    }
+
+    .toast.error-toast {
+      background-color: #c82333;
+    }
+
+    .toast.success-toast {
+      background-color: #218838;
+    }
+
+    .toast.info-toast {
+      background-color: #0069d9;
+    }
+
+    @-webkit-keyframes fadein {
+      from {
+        bottom: 0;
+        opacity: 0;
+      }
+
+      to {
+        bottom: 30px;
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadein {
+      from {
+        bottom: 0;
+        opacity: 0;
+      }
+
+      to {
+        bottom: 30px;
+        opacity: 1;
+      }
+    }
+
+    @-webkit-keyframes fadeout {
+      from {
+        bottom: 30px;
+        opacity: 1;
+      }
+
+      to {
+        bottom: 0;
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeout {
+      from {
+        bottom: 30px;
+        opacity: 1;
+      }
+
+      to {
+        bottom: 0;
+        opacity: 0;
+      }
+    }
+
+    input:invalid {
+      border: 1px solid red;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px 25px;
+    }
+
+    .form-group {
+      margin-bottom: 0;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .instructions {
+      padding: 15px;
+      background-color: #e9f5fe;
+      border-left: 5px solid #2196F3;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+
+    .instructions p,
+    .instructions ol li {
+      font-size: 0.9em;
+    }
+
+    .button-bar {
+      margin-top: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .triggers-section table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 0.9em;
+    }
+
+    .triggers-section th,
+    .triggers-section td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .triggers-section th {
+      background-color: #f2f2f2;
+    }
+
+    .triggers-section td input[type="checkbox"] {
+      margin-right: 5px;
+    }
+
+    .checkbox-label {
+      display: inline;
+      font-weight: normal;
+      font-size: 0.95em;
+      margin-left: 5px;
+    }
+
+    .checkbox-container {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="toastNotification" class="toast"></div>
+  <div class="container">
+    <h1>Peer Evaluation Automation Tool</h1>
+    <div class="instructions">
+      <p>This tool automates creating peer evaluation Google Forms and posts them as assignments in Google Classroom.</p>
+      <ol>
+        <li>Student names in your spreadsheet must <strong>exactly match</strong> their full names in Google Classroom.</li>
+        <li>All students must have a group name to be included.</li>
+        <li>Use "Save Current Inputs as Default" to store your common settings.</li>
+        <li>Use "Refresh Preview & Check Cells" to verify your setup before processing.</li>
+      </ol>
+    </div>
+
+    <form id="configForm">
+      <h2>Spreadsheet & Data Configuration 📈</h2>
+      <div class="form-grid">
+        <div class="form-group"><label for="sheetName">Sheet Name:</label><input type="text" id="sheetName" name="sheetName" value="q4project" required placeholder="e.g., Sheet1"></div>
+        <div class="form-group"><label for="namesRange">Names Range (e.g., A2:A17):</label><input type="text" id="namesRange" name="namesRange" value="A2:A17" required placeholder="e.g., A2:A17"></div>
+        <div class="form-group"><label for="groupNamesRange">Group Names Range (e.g., B2:B17):</label><input type="text" id="groupNamesRange" name="groupNamesRange" value="B2:B17" required placeholder="e.g., B2:B17"></div>
+        <div class="form-group"><label for="evaluationTableStartCol">Eval Table Start Column (e.g., F):</label><input type="text" id="evaluationTableStartCol" name="evaluationTableStartCol" value="F" required placeholder="e.g., F"></div>
+        <div class="form-group"><label for="urlLinksRange">Cell for Form URLs (e.g., A19):</label><input type="text" id="urlLinksRange" name="urlLinksRange" value="A19" required placeholder="e.g., A19"></div>
+        <div class="form-group full-width checkbox-container">
+          <input type="checkbox" id="includeJustificationInTable" name="includeJustificationInTable" checked>
+          <label for="includeJustificationInTable" class="checkbox-label" style="margin-top:0;">Include Justification Response to Sheet (column next to each score)</label>
+        </div>
+        <div class="form-group full-width checkbox-container">
+          <input type="checkbox" id="includeFeedbackInTable" name="includeFeedbackInTable" checked>
+          <label for="includeFeedbackInTable" class="checkbox-label" style="margin-top:0;">Include Feedback Response to Sheet (column before 'Last Submitted')</label>
+        </div>
+      </div>
+
+      <h2 style="margin-top:40px;">Google Classroom Configuration 🎓</h2>
+      <div class="form-grid">
+        <div class="form-group"><label for="courseName">Exact Classroom Course Name:</label><input type="text" id="courseName" name="courseName" value="COM13 - Robotics (2024-25)" required></div>
+        <div class="form-group"><label for="courseTopicName">Classroom Topic Name (creates new if not found):</label><input type="text" id="courseTopicName" name="courseTopicName" value="4th Quarter" required></div>
+        <div class="form-group full-width"><label for="assignmentTitle">Base Assignment Title:</label><input type="text" id="assignmentTitle" name="assignmentTitle" value="Q4Project - Peer Evaluation Form" required></div>
+        <div class="form-group full-width"><label for="assignmentDescription">Common Assignment Description:</label><textarea id="assignmentDescription" name="assignmentDescription" rows="3">Evaluate YOURSELF and your groupmates' contribution and performance. Be honest in answering this form.</textarea></div>
+        <div class="form-group"><label for="dueDate">Due Date:</label><input type="date" id="dueDate" name="dueDate" value="2025-04-04" required></div>
+        <div class="form-group"><label for="dueTime">Due Time:</label><input type="time" id="dueTime" name="dueTime" value="23:59:00" step="1" required></div>
+        <div class="form-group"><label for="utcOffset">Your UTC Offset (+HHMM or -HHMM):</label><input type="text" id="utcOffset" name="utcOffset" value="+0800" required placeholder="+0800" pattern="^[+\-]\d{4}$"></div>
+        <div class="form-group"><label for="assignmentPoints">Assignment Points (0 for ungraded):</label><input type="number" id="assignmentPoints" name="assignmentPoints" value="0" required min="0"></div>
+        <div class="form-group"><label for="assignmentScheduleDate">Schedule Date (Optional):</label><input type="date" id="assignmentScheduleDate" name="assignmentScheduleDate"></div>
+        <div class="form-group"><label for="assignmentScheduleTime">Schedule Time (Optional):</label><input type="time" id="assignmentScheduleTime" name="assignmentScheduleTime" step="1"></div>
+      </div>
+
+      <h2>Form Details 📋</h2>
+      <div class="form-grid">
+        <div class="form-group"><label for="formFolder">Drive Folder Name (for storing forms):</label><input type="text" id="formFolder" name="formFolder" value="com13-q4project-peerforms" required></div>
+        <div class="form-group full-width"><label for="formTitle">Base Form Title:</label><input type="text" id="formTitle" name="formTitle" value="Q4Project - Peer Evaluation Form" required></div>
+        <div class="form-group full-width"><label for="formDescription">Common Form Description:</label><textarea id="formDescription" name="formDescription" rows="3">Evaluate YOURSELF and your groupmates' contribution and performance. Be honest in answering this form.</textarea></div>
+        <div class="form-group"><label for="scaleLowerBound">Scale Lower Bound:</label><input type="number" id="scaleLowerBound" name="scaleLowerBound" value="1" required></div>
+        <div class="form-group"><label for="scaleUpperBound">Scale Upper Bound:</label><input type="number" id="scaleUpperBound" name="scaleUpperBound" value="5" required></div>
+        <div class="form-group"><label for="scaleLowerLabel">Scale Lower Label:</label><input type="text" id="scaleLowerLabel" name="scaleLowerLabel" value="Poor" required></div>
+        <div class="form-group"><label for="scaleUpperLabel">Scale Upper Label:</label><input type="text" id="scaleUpperLabel" name="scaleUpperLabel" value="Excellent" required></div>
+        <div class="form-group full-width checkbox-container">
+          <input type="checkbox" id="allowResponseEdits" name="allowResponseEdits" checked>
+          <label for="allowResponseEdits" class="checkbox-label" style="margin-top:0; display:inline;">Allow response editing</label>
+        </div>
+      </div>
+
+      <div class="button-bar">
+        <button type="button" onclick="saveDefaults()" id="saveDefaultsButton" class="action-button secondary">Save Current Inputs as Default</button>
+        <button type="button" onclick="refreshPreviewAndChecks()" id="refreshPreviewButton" class="action-button">Refresh Preview & Check Cells</button>
+      </div>
+
+      <div class="preview-section full-width">
+        <h3>Data Preview & Checks 🔎<span style="font-size: 0.7em; font-weight: normal;">(Uses values from form fields above)</span></h3>
+        <div id="overallPreviewError" class="error" style="display:none; margin-bottom:10px;"></div>
+        <div id="overallPreviewWarnings" class="info" style="display:none; margin-bottom:10px;"></div>
+        <div class="form-grid">
+          <div><label>Names (<span id="previewNamesRangeDisplay"></span>):</label>
+            <ul id="namesPreviewList"></ul>
+            <p id="studentCountDisplay"></p>
+          </div>
+          <div><label>Groups (<span id="previewGroupNamesRangeDisplay"></span>):</label>
+            <ul id="groupNamesPreviewList"></ul>
+            <p id="groupAssignmentStatus"></p>
+          </div>
+          <div><label>Unique Groups (<span id="uniqueGroupCountDisplay"></span>):</label>
+            <ul id="uniqueGroupList"></ul>
+          </div>
+          <div><label>Eval Table Header (<span id="previewEvalTableStartColDisplay"></span>):</label>
+            <p id="evalCellStatus"></p><label>Eval Area:</label>
+            <p id="evalTableAreaStatus"></p>
+          </div>
+          <div><label>URL Cell (<span id="previewUrlLinksRangeDisplay"></span>):</label>
+            <p id="urlLinksCellStatus"></p>
+          </div>
+          <div><label>Drive Folder (<span id="previewFormFolderDisplay"></span>):</label>
+            <p id="driveFolderStatus"></p>
+          </div>
+          <div><label>Topic (<span id="previewCourseTopicNameDisplay"></span> in <span id="previewCourseNameForTopicDisplay"></span>):</label>
+            <p id="classroomTopicStatus"></p>
+          </div>
+          <div><label>Due Date (<span id="previewDueDateDisplay"></span>):</label>
+            <p id="dueDateCheckStatus"></p>
+          </div>
+          <div><label>Classroom Roster (<span id="previewCourseNameForRosterDisplay"></span>):<button type="button" class="copy-button" onclick="copyRosterToClipboard()">Copy</button></label>
+            <ul id="classroomRosterPreviewList"></ul>
+          </div>
+          <div><label>Mismatches (Sheet vs <span id="previewCourseNameForMismatchDisplay"></span>):</label>
+            <p id="classroomRosterCheckStatus"></p>
+            <ul id="classroomNameMismatchList"></ul>
+          </div>
+          <div><label>Schedule (<span id="previewScheduleDateDisplay"></span>):</label>
+            <p id="scheduleDateCheckStatus"></p>
+          </div>
+        </div>
+      </div>
+      <hr style="margin-top: 30px; border-top: 1px solid #ccc;">
+      <div style="margin-top: 15px; margin-bottom: 15px;">
+        <input type="checkbox" id="deleteAllOldTriggers" name="deleteAllOldTriggers">
+        <label for="deleteAllOldTriggers" class="checkbox-label">Delete all existing triggers before creating new ones.</label>
+      </div>
+      <button type="button" onclick="submitConfigForm()" id="submitButton">Create Forms & Assignments</button>
+    </form>
+    <div id="statusMessage"></div>
+
+    <div class="triggers-section full-width" style="margin-top: 40px;">
+      <h2>Manage Form Triggers 🔗</h2>
+      <div class="button-bar">
+        <button type="button" onclick="loadTriggersTable()" id="refreshTriggersButton" class="action-button secondary">Refresh Triggers List</button>
+        <button type="button" onclick="deleteSelectedTriggersFromTable()" id="deleteSelectedTriggersButton" class="action-button danger">Delete Selected Triggers</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="selectAllTriggersCheckbox" onclick="toggleAllTriggerCheckboxes(this.checked)"></th>
+            <th>Form Title Context</th>
+            <th>Sheet</th>
+            <th>Group</th>
+            <th>Course</th>
+            <th>Created Date</th>
+          </tr>
+        </thead>
+        <tbody id="triggersTableBody">
+          <tr>
+            <td colspan="6" style="text-align:center;">Click "Refresh Triggers List" to load.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function showToast(message, type = 'info-toast', duration = 3000) {
+      const toast = document.getElementById('toastNotification');
+      toast.textContent = message;
+      toast.className = 'toast show ' + type;
+      toast.classList.remove('info-toast', 'success-toast', 'error-toast');
+      toast.classList.add(type);
+      setTimeout(() => {
+        toast.className = toast.className.replace("show ", "");
+      }, duration - 500);
+    }
+
+    function validateForm() {
+      const form = document.getElementById('configForm');
+      const requiredInputs = form.querySelectorAll('[required]');
+      let allFilled = true;
+      let firstInvalidElement = null;
+      requiredInputs.forEach(input => {
+        if (!input.value.trim()) {
+          allFilled = false;
+          input.style.borderColor = 'red';
+          if (!firstInvalidElement) firstInvalidElement = input;
+        } else {
+          input.style.borderColor = '#ddd';
+        }
+      });
+      const utcOffsetInput = document.getElementById('utcOffset');
+      if (utcOffsetInput.value.trim() && !/^[+\-]\d{4}$/.test(utcOffsetInput.value.trim())) {
+        allFilled = false;
+        utcOffsetInput.style.borderColor = 'red';
+        if (!firstInvalidElement) firstInvalidElement = utcOffsetInput;
+        showToast('UTC Offset format invalid.', 'error-toast');
+      } else if (utcOffsetInput.value.trim()) {
+        utcOffsetInput.style.borderColor = '#ddd';
+      }
+      const scaleLower = document.getElementById('scaleLowerBound');
+      const scaleUpper = document.getElementById('scaleUpperBound');
+      if (parseInt(scaleLower.value) >= parseInt(scaleUpper.value)) {
+        allFilled = false;
+        scaleLower.style.borderColor = 'red';
+        scaleUpper.style.borderColor = 'red';
+        if (!firstInvalidElement) firstInvalidElement = scaleLower;
+        showToast('Scale Upper Bound must be > Lower Bound.', 'error-toast');
+      }
+      if (!allFilled && firstInvalidElement) {
+        firstInvalidElement.focus();
+        showToast('Please fill required fields & correct errors.', 'error-toast', 4000);
+      }
+      return allFilled;
+    }
+
+    function updatePreviewList(elementId, dataArray, isRawText = false) {
+      const listEl = document.getElementById(elementId);
+      listEl.innerHTML = '';
+      if (dataArray && dataArray.length > 0) {
+        dataArray.forEach(item => {
+          const li = document.createElement('li');
+          li[isRawText ? 'innerText' : 'textContent'] = item || "(empty)";
+          listEl.appendChild(li);
+        });
+      } else {
+        listEl.innerHTML = '<li>No data.</li>';
+      }
+    }
+
+    function setStatusText(elementId, text, statusClass = '') {
+      const el = document.getElementById(elementId);
+      if (el) {
+        el.innerHTML = text;
+        el.className = '';
+        if (statusClass) el.classList.add(statusClass.startsWith('status-') ? statusClass : `status-${statusClass}`);
+      }
+    }
+
+    function copyRosterToClipboard() {
+      const listEl = document.getElementById('classroomRosterPreviewList');
+      const items = listEl.getElementsByTagName('li');
+      let textToCopy = "";
+      for (let i = 0; i < items.length; i++) {
+        textToCopy += items[i].innerText + "\n";
+      }
+      if (textToCopy) {
+        navigator.clipboard.writeText(textToCopy.trim()).then(() => showToast('Roster copied!', 'success-toast')).catch(err => showToast('Failed to copy.', 'error-toast'));
+      } else {
+        showToast('No roster to copy.', 'info-toast');
+      }
+    }
+
+    function getCurrentFormData() {
+      const form = document.getElementById('configForm');
+      const formData = {};
+      new FormData(form).forEach((value, key) => formData[key] = value.trim());
+      // Handle checkboxes separately as FormData only includes them if checked
+      ['allowResponseEdits', 'includeJustificationInTable', 'includeFeedbackInTable'].forEach(id => formData[id] = form.elements[id].checked);
+      return formData;
+    }
+
+    function saveDefaults() {
+      const formData = getCurrentFormData();
+      document.getElementById('saveDefaultsButton').disabled = true;
+      google.script.run
+        .withSuccessHandler(response => {
+          showToast(response.message, response.status === 'success' ? 'success-toast' : 'error-toast');
+          document.getElementById('saveDefaultsButton').disabled = false;
+        })
+        .withFailureHandler(error => {
+          showToast('Failed to save defaults: ' + error.message, 'error-toast');
+          document.getElementById('saveDefaultsButton').disabled = false;
+        })
+        .saveUserDefaults(formData);
+    }
+
+    function populateFormWithDefaults(defaults) {
+      if (!defaults || Object.keys(defaults).length === 0) {
+        showToast("No saved defaults found.", "info-toast");
+        return;
+      }
+      const form = document.getElementById('configForm');
+      for (const key in defaults) {
+        if (form.elements[key]) {
+          if (form.elements[key].type === 'checkbox') {
+            form.elements[key].checked = defaults[key] === true || defaults[key] === 'true'; // Handle string from properties
+          } else {
+            form.elements[key].value = defaults[key];
+          }
+        }
+      }
+      showToast("Defaults loaded into form.", "success-toast");
+      refreshPreviewAndChecks(); // Refresh preview after loading defaults
+    }
+
+    function refreshPreviewAndChecks() {
+      try {
+        const form = document.getElementById('configForm');
+        const formData = getCurrentFormData();
+        const getVal = (id) => formData[id] ? formData[id] : '';
+        const sheetName = getVal('sheetName'),
+          namesRange = getVal('namesRange'),
+          groupNamesRange = getVal('groupNamesRange'),
+          evalTableStartCol = getVal('evaluationTableStartCol'),
+          urlLinksRange = getVal('urlLinksRange'),
+          formFolder = getVal('formFolder'),
+          courseName = getVal('courseName'),
+          courseTopicName = getVal('courseTopicName'),
+          dueDateStr = form.dueDate.value,
+          dueTimeStr = form.dueTime.value,
+          utcOffsetStr = getVal('utcOffset'),
+          scheduleDateStr = form.assignmentScheduleDate.value,
+          scheduleTimeStr = form.assignmentScheduleTime.value;
+
+        const includeJustification = formData['includeJustificationInTable'];
+        const includeFeedback = formData['includeFeedbackInTable'];
+
+        const courseNameForTopic = courseName,
+          courseNameForRoster = courseName,
+          courseNameForMismatch = courseName;
+        ['previewNamesRangeDisplay', 'previewGroupNamesRangeDisplay', 'previewEvalTableStartColDisplay', 'previewUrlLinksRangeDisplay', 'previewFormFolderDisplay', 'previewCourseTopicNameDisplay', 'previewCourseNameForTopicDisplay', 'previewCourseNameForRosterDisplay', 'previewCourseNameForMismatchDisplay']
+        .forEach(id => document.getElementById(id).textContent = eval(id.replace('preview', '').charAt(0).toLowerCase() + id.replace('preview', '').replace('Display', '').slice(1)) || 'N/A');
+        document.getElementById('previewDueDateDisplay').textContent = (dueDateStr && dueTimeStr) ? `${dueDateStr} ${dueTimeStr}` : "N/A";
+        document.getElementById('previewScheduleDateDisplay').textContent = (scheduleDateStr && scheduleTimeStr) ? `${scheduleDateStr} ${scheduleTimeStr}` : "Not set";
+
+        const refreshBtn = document.getElementById('refreshPreviewButton');
+        refreshBtn.disabled = true;
+        refreshBtn.textContent = 'Refreshing...';
+        ['overallPreviewError', 'overallPreviewWarnings'].forEach(id => {
+          document.getElementById(id).style.display = 'none';
+          document.getElementById(id).textContent = '';
+        });
+
+        google.script.run
+          .withSuccessHandler(response => {
+            refreshBtn.disabled = false;
+            refreshBtn.textContent = 'Refresh Preview & Check Cells';
+            if (response.error) {
+              document.getElementById('overallPreviewError').textContent = 'Critical Errors: ' + response.error;
+              document.getElementById('overallPreviewError').style.display = 'block';
+              showToast('Preview critical errors!', 'error-toast', 7000);
+            }
+            if (response.errors) {
+              document.getElementById('overallPreviewWarnings').textContent = 'Preview Notes/Warnings: ' + response.errors;
+              document.getElementById('overallPreviewWarnings').style.display = 'block';
+              if (!response.error) showToast('Preview has warnings.', 'info-toast', 5000);
+            }
+            if (!response.error && !response.errors) {
+              showToast('Preview updated!', 'success-toast');
+            }
+
+            updatePreviewList('namesPreviewList', response.names);
+            updatePreviewList('groupNamesPreviewList', response.groupNames);
+            setStatusText('studentCountDisplay', `Count: <span class="status-${response.studentCount > 0 ? 'ok' : 'warning'}">${response.studentCount||0}</span>`);
+            setStatusText('groupAssignmentStatus', `Groups: <span class="status-${response.allNamesHaveGroup ? 'ok' : 'warning'}">${response.allNamesHaveGroup ? 'All assigned' : (response.namesMissingGroupCount||0) + ' missing'}</span>`);
+            document.getElementById('uniqueGroupCountDisplay').textContent = response.uniqueGroupCount || 0;
+            updatePreviewList('uniqueGroupList', response.uniqueGroupsPreview || response.uniqueGroups);
+            setStatusText('evalCellStatus', response.evalHeader.value === "Error" ? `<span class="status-error">${response.evalHeader.value}</span>` : (response.evalHeader.isEmpty ? '<span class="status-ok">Empty</span>' : `<span class="status-warning">"${response.evalHeader.value}"</span>`));
+            setStatusText('evalTableAreaStatus', `<span class="${response.evalTableCheckMessage.includes("Error")?"status-error":(response.evalTableAreaClear?"status-ok":"status-warning")}">${response.evalTableCheckMessage}</span>`);
+            setStatusText('urlLinksCellStatus', response.urlCell.value === "Error" ? `<span class="status-error">${response.urlCell.value}</span>` : (response.urlCell.isEmpty ? '<span class="status-ok">Empty</span>' : `<span class="status-warning">Not empty: "${response.urlCell.value}"</span>`));
+            setStatusText('driveFolderStatus', `<span class="${response.driveFolderCheckMessage.includes("Error")?"status-error":(response.driveFolderExists?"status-ok":"status-warning")}">${response.driveFolderCheckMessage}</span>`);
+            setStatusText('classroomTopicStatus', `<span class="${response.classroomTopicCheckMessage.includes("Error")?"status-error":(response.classroomTopicExists?"status-ok":"status-warning")}">${response.classroomTopicCheckMessage}</span>`);
+            setStatusText('dueDateCheckStatus', `<span class="${response.dueDateCheckMessage.includes("Error")?"status-error":(response.dueDateInFuture===true?'status-ok':(response.dueDateInFuture===false?'status-error':'status-warning'))}">${response.dueDateCheckMessage}</span>`);
+            updatePreviewList('classroomRosterPreviewList', response.classroomRoster || ["Hit 'Refresh'"], true);
+            let rosterPStatus = response.classroomRosterCheckMessage.includes("Error") ? "status-error" : (response.classroomNameMismatchCount > 0 ? "status-error" : (response.studentCount > 0 ? "status-ok" : "status-warning"));
+            if (response.classroomRoster && response.classroomRoster.length === 1 && (response.classroomRoster[0].startsWith("Error") || response.classroomRoster[0].startsWith("No students"))) {
+              rosterPStatus = "status-warning";
+            }
+            setStatusText('classroomRosterCheckStatus', `<span class="${rosterPStatus}">${response.classroomRosterCheckMessage}</span>`);
+            updatePreviewList('classroomNameMismatchList', response.classroomNameMismatchesPreview || response.classroomNameMismatches);
+            setStatusText('scheduleDateCheckStatus', `<span class="${response.scheduleDateCheckMessage.includes("Error")?"status-error":(response.scheduleDateCheckMessage.includes("Warning")?"status-warning":"status-ok")}">${response.scheduleDateCheckMessage}</span>`);
+          })
+          .withFailureHandler(error => {
+            refreshBtn.disabled = false;
+            refreshBtn.textContent = 'Refresh Preview & Check Cells';
+            document.getElementById('overallPreviewError').textContent = 'Preview script error: ' + error.message;
+            document.getElementById('overallPreviewError').style.display = 'block';
+            showToast('Preview script error: ' + error.message, 'error-toast', 5000);
+          })
+          .getPreviewAndCellData(sheetName, namesRange, groupNamesRange, evalTableStartCol, urlLinksRange, formFolder, courseName, courseTopicName, dueDateStr, dueTimeStr, utcOffsetStr, scheduleDateStr, scheduleTimeStr, includeJustification, includeFeedback);
+      } catch (e) {
+        showToast(`Error: refreshPreviewAndChecks: ${e.message}`, 'error-toast');
+      }
+    }
+
+    function submitConfigForm() {
+      if (!validateForm()) return;
+      const formData = getCurrentFormData();
+      const deleteAllOldTriggersFlag = document.getElementById('deleteAllOldTriggers').checked;
+      const statusDiv = document.getElementById('statusMessage');
+      const submitBtn = document.getElementById('submitButton');
+
+      if (deleteAllOldTriggersFlag) {
+        if (!confirm(`Are you sure you want to delete all old triggers? This cannot be undone.`)) {
+          return;
+        }
+      }
+
+      statusDiv.className = 'info';
+      statusDiv.textContent = 'Processing... Please wait. This may take a few minutes depending on the number of students and groups.';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Processing...';
+
+      google.script.run
+        .withSuccessHandler(response => {
+          statusDiv.className = response.status === "success" ? 'success' : 'error';
+          statusDiv.textContent = (response.status === "success" ? 'Success! ' : 'Error: ') + response.message;
+          showToast(response.message, response.status === 'success' ? 'success-toast' : 'error-toast', 7000);
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Create Forms & Assignments';
+          loadTriggersTable(); // Refresh trigger list after processing
+        })
+        .withFailureHandler(error => {
+          statusDiv.className = 'error';
+          statusDiv.textContent = 'Script error: ' + error.message;
+          showToast('Script execution error: ' + error.message, 'error-toast', 7000);
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Create Forms & Assignments';
+        })
+        .processUserInputs(formData, deleteAllOldTriggersFlag);
+    }
+
+    function loadTriggersTable() {
+      const refreshBtn = document.getElementById('refreshTriggersButton');
+      refreshBtn.disabled = true;
+      refreshBtn.textContent = "Refreshing...";
+      google.script.run
+        .withSuccessHandler(triggers => {
+          const tbody = document.getElementById('triggersTableBody');
+          tbody.innerHTML = ''; // Clear existing rows
+          if (triggers && triggers.length > 0) {
+            triggers.forEach(trigger => {
+              const row = tbody.insertRow();
+              row.insertCell().innerHTML = `<input type="checkbox" class="trigger-checkbox" value="${trigger.id}">`;
+              row.insertCell().textContent = trigger.formTitle || 'N/A';
+              row.insertCell().textContent = trigger.sheetName || 'N/A';
+              row.insertCell().textContent = trigger.groupName || 'N/A';
+              row.insertCell().textContent = trigger.courseName || 'N/A';
+              row.insertCell().textContent = trigger.creationDate || 'N/A';
+            });
+          } else {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No triggers found.</td></tr>';
+          }
+          refreshBtn.disabled = false;
+          refreshBtn.textContent = "Refresh Triggers List";
+          document.getElementById('selectAllTriggersCheckbox').checked = false;
+        })
+        .withFailureHandler(error => {
+          showToast('Failed to load triggers: ' + error.message, 'error-toast');
+          document.getElementById('triggersTableBody').innerHTML = '<tr><td colspan="6" style="text-align:center;">Error loading triggers.</td></tr>';
+          refreshBtn.disabled = false;
+          refreshBtn.textContent = "Refresh Triggers List";
+        })
+        .getProjectTriggers();
+    }
+
+    function toggleAllTriggerCheckboxes(checked) {
+      const checkboxes = document.querySelectorAll('.trigger-checkbox');
+      checkboxes.forEach(cb => cb.checked = checked);
+    }
+
+    function deleteSelectedTriggersFromTable() {
+      const selectedIds = Array.from(document.querySelectorAll('.trigger-checkbox:checked')).map(cb => cb.value);
+      if (selectedIds.length === 0) {
+        showToast('No triggers selected to delete.', 'info-toast');
+        return;
+      }
+      const delBtn = document.getElementById('deleteSelectedTriggersButton');
+      delBtn.disabled = true;
+      delBtn.textContent = "Deleting...";
+      google.script.run
+        .withSuccessHandler(response => {
+          showToast(response.message, response.status === 'success' ? 'success-toast' : 'error-toast');
+          loadTriggersTable(); // Refresh the list
+          delBtn.disabled = false;
+          delBtn.textContent = "Delete Selected Triggers";
+        })
+        .withFailureHandler(error => {
+          showToast('Failed to delete triggers: ' + error.message, 'error-toast');
+          delBtn.disabled = false;
+          delBtn.textContent = "Delete Selected Triggers";
+        })
+        .deleteSelectedTriggers(selectedIds);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      google.script.run.withSuccessHandler(populateFormWithDefaults).getUserDefaults();
+      loadTriggersTable(); // Load triggers on page load
+
+      const requiredInputs = document.querySelectorAll('#configForm [required]');
+      requiredInputs.forEach(input => {
+        input.addEventListener('input', () => {
+          if (input.value.trim()) input.style.borderColor = '#ddd';
+          if (input.checkValidity()) input.style.borderColor = '#ddd';
+        });
+        input.addEventListener('invalid', () => input.style.borderColor = 'red');
+      });
+      // Initial call to set up preview display for potentially loaded defaults
+      // setTimeout(refreshPreviewAndChecks, 500); // Allow defaults to populate first
+    });
+  </script>
+</body>
+
+</html>
