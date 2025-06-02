@@ -56,6 +56,7 @@ The Peer Evaluation Automation Tool uses Google Apps Script to:
    - **WEBAPP_ERROR_LOG_SHEET_NAME**: Confirm a sheet named "Errors" exists in the error log spreadsheet (or adjust this constant to match your sheet name).
    - **XOR_KEY**: Change `'YourSecretKeyForXOR'` to a unique, random string (e.g., `MySecret123`). Keep this private as it secures form data.
    <img src="screenshots/step2-update_constants.png" alt="Update Constants" />
+   <img src="screenshots/step2-error_sheet_sample.png" alt="Error Sheet" width="400"/>
 5. Save by clicking on the save icon.
 
 ### Step 3: Enable the Google Classroom API
