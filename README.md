@@ -35,7 +35,7 @@ The Peer Evaluation Automation Tool uses Google Apps Script to:
 ### Step 1: Prepare the Google Sheet
 1. Create a new Google Sheet or use an existing one.
 2. Set up two columns:
-   - **Student Names**: Full names that match exactly with Google Classroom (e.g., `A2:A17`).
+   - **Student Names**: Full names that match exactly with Google Classroom (e.g., `A2:A17`). Tip: Click the preview button in the WebApp to have a list of students in the specified Classroom.
    - **Group Names**: The group each student belongs to (e.g., `B2:B17`).
 3. Identify two settings for later:
    - **Evaluation Table Start Column**: The column where evaluation headers will begin (e.g., `F`).
