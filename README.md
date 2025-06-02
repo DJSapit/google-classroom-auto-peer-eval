@@ -145,7 +145,7 @@ Fill out these sections in the web app:
 ### Step 7: Manage Triggers (Optional)
 1. In the web app, click **Refresh Triggers List** to see active form triggers.
 2. Select any triggers to remove and click **Delete Selected Triggers** to clean up unused triggers.
-   - Deleting a trigger will stop populating the sheet's evaluation table for that form's reponses.
+   - Deleting a trigger will stop populating the sheet's evaluation table for that form's responses.
 
 ## Spreadsheet Output
 
