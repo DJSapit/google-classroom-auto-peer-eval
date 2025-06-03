@@ -46,16 +46,20 @@ The Peer Evaluation Automation Tool uses Google Apps Script to:
 ### Step 2: Set Up the Apps Script Project
 1. Open your Google Sheet.
 2. Navigate to **Extensions > Apps Script**.  
-   <img src="screenshots/step2-appsscript.png" alt="Apps Script Extension" />
+   <img src="screenshots/step2-appsscript.png" alt="Apps Script Extension" width="400" />
 3. In the Apps Script editor:
-   - Replace the default code in `Code.gs` with the contents of `Code.js` from this repository.
+   - Replace all the default code in `Code.gs` with the contents of `Code.js` from this GitHub repository.  
+   <img src="screenshots/step2-codejs.png" alt="Code JS File on GitHub" width="300" /><br>
+   - Tip: Click the "Copy raw file" button to copy all the content of the file conveniently.  
+   <img src="screenshots/step2-copy_raw_file.png" alt="Copy Raw File on GitHub" width="200" /><br>
    - Click the `+` icon next to "Files," choose **HTML**, name it `WebApp`, and paste the contents of `WebApp.html` from this repository.
    <img src="screenshots/step2-webapp_html.png" alt="Web App HTML" />
 4. Update these constants in `Code.js`:
-   - **WEBAPP_ERROR_LOG_SPREADSHEET_ID**: Create a new Google Sheet or use an existing one for error logging, copy its ID from the URL (e.g., `https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/edit`), and insert it here.
+   - **WEBAPP_ERROR_LOG_SPREADSHEET_ID**: Create a new Google Sheet or use an existing one for error logging, copy its ID from the URL (the ID is the text between "/d/" and "/edit", e.g., `https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/edit`), and insert it here.
    - **WEBAPP_ERROR_LOG_SHEET_NAME**: Confirm a sheet named "Errors" exists in the error log spreadsheet (or adjust this constant to match your sheet name).
    - **XOR_KEY**: Change `'YourSecretKeyForXOR'` to a unique, random string (e.g., `MySecret123`). Keep this private as it secures form data.
-   <img src="screenshots/step2-update_constants.png" alt="Update Constants" />
+   <img src="screenshots/step2-update_constants.png" alt="Update Constants" /><br>
+   - Keep the single quote both at the start and end of the text. The text should be colored red, like in the screenshot above.
    <img src="screenshots/step2-error_sheet_sample.png" alt="Error Sheet" width="400"/>
 5. Save by clicking on the save icon.
 
