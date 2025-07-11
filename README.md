@@ -186,7 +186,7 @@ The evaluation table in your Google Sheet (starting at the specified column, e.g
 - What happens when a form trigger is deleted?
    - If you delete a form trigger, the automatic connection breaks, and new responses from this form will not populate the Google Sheet.
 - Can I put a row gap between names in the sheet?
-   - Yes, as long as the names and group names range in Spreadsheet & Data Configuration cover all the target names.
+   - Yes, as long as the row gap is empty and that names and group names range in the Spreadsheet & Data Configuration cover all the target names.
 
 ## Contributing
 
