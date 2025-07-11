@@ -70,7 +70,7 @@ The Peer Evaluation Automation Tool uses Google Apps Script to:
 <p align="center"><img src="screenshots/step3-classroom_api.png" alt="Enable Classroom API" width="400"/></p>
 
 ### Step 4: Deploy the Web App
-1. In the Apps Script editor, click **Deploy > New Deployment**.
+1. In the Apps Script editor, click **Deploy > New deployment**.
 2. Click on the gear icon and select **Web App** as the deployment type.
 3. Configure:
    - **Execute as**: "Me (your_email@example.com)".
@@ -87,7 +87,7 @@ The Peer Evaluation Automation Tool uses Google Apps Script to:
 ## Usage
 
 ### Step 1: Open the Web App
-1. Paste the Web App URL into your browser.
+1. Paste the Web App URL into your browser. You can access the Web App URL in your Google Sheet's Apps Script under **Deploy > Test deployments**.
 2. Sign in with your Google account if asked.
 
 ### Step 2: Enter Settings
@@ -174,8 +174,17 @@ The evaluation table in your Google Sheet (starting at the specified column, e.g
 
 - **Name Matching**: Student names in the Google Sheet must exactly match those in Google Classroom for proper assignment and response recording.
 - **XOR Key**: Do not alter `XOR_KEY` in `Code.js` after creating forms, as it will stop responses from being processed correctly. Keep it private.
+- **Form Data**: In a sheet, do not alter the names range, group names range, Eval table start column, or the Cell for Form URLs after creating forms, as these details are memorized on form creation. Create new forms when you need to alter them.
 - **Google Limits**: The tool is suitable for typical class sizes, but may encounter Google API limits with very large groups. Check the error log if problems occur.
 - **Data Privacy**: Follow your institution’s policies for handling student data.
+
+## Q&A
+- What happens when a student answers another group's form?
+   - Their response will not be recorded in the evaluation table. This event is logged in the errors sheet. That is why setting responses to "verified" in the form settings is important.
+- What is a trigger?
+   - When a form is submitted, the trigger runs the script, which populates the Google Sheet with the new response data.
+- What happens when a form trigger is deleted?
+   - If you delete a form trigger, the automatic connection breaks, and new responses from this form will not populate the Google Sheet.
 
 ## Contributing
 
