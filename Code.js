@@ -471,10 +471,24 @@ function getPreviewAndCellData(sheetName, namesRangeStr, groupNamesRangeStr, eva
       const topicsResponse = Classroom.Courses.Topics.list(courseIdForChecks);
       response.classroomTopicExists = topicsResponse.topic && topicsResponse.topic.find(t => t.name === courseTopicName);
       response.classroomTopicCheckMessage = response.classroomTopicExists ? "Topic exists." : "Topic does NOT exist (will be created).";
-      const classroomStudentsResponse = Classroom.Courses.Students.list(courseIdForChecks);
-      const classroomStudents = classroomStudentsResponse.students;
-      if (classroomStudents && classroomStudents.length > 0) {
-        response.classroomRoster = classroomStudents
+      let allClassroomStudents = [];
+      let pageToken = null;
+      
+      do {
+        let optionalArgs = { pageSize: 100 }; // Pull up to 100 per page to reduce API calls
+        if (pageToken) {
+          optionalArgs.pageToken = pageToken;
+        }
+        
+        let classroomStudentsResponse = Classroom.Courses.Students.list(courseIdForChecks, optionalArgs);
+        if (classroomStudentsResponse.students) {
+          allClassroomStudents = allClassroomStudents.concat(classroomStudentsResponse.students);
+        }
+        pageToken = classroomStudentsResponse.nextPageToken;
+      } while (pageToken);
+  
+      if (allClassroomStudents.length > 0) {
+        response.classroomRoster = allClassroomStudents
           .map(s => s.profile.name.fullName)
           .sort((a, b) => {
             // Extract last names
@@ -629,17 +643,31 @@ function processUserInputs(formObject, deleteAllOldTriggersFlag) {
     formObject.includeJustificationInTable = includeJustificationInTable;
     formObject.includeFeedbackInTable = includeFeedbackInTable;
 
-
     const userSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
     const userSheet = userSpreadsheet.getSheetByName(formObject.sheetName);
     const courseId = getCourseIdByName(formObject.courseName);
-    const classroomStudentsResponse = Classroom.Courses.Students.list(courseId);
-    if (!classroomStudentsResponse.students || classroomStudentsResponse.students.length === 0) {
+    
+    let masterClassroomStudents = [];
+    let pageToken = null;
+    
+    do {
+      let optionalArgs = { pageSize: 100 };
+      if (pageToken) optionalArgs.pageToken = pageToken;
+      
+      let classroomStudentsResponse = Classroom.Courses.Students.list(courseId, optionalArgs);
+      if (classroomStudentsResponse.students) {
+        masterClassroomStudents = masterClassroomStudents.concat(classroomStudentsResponse.students);
+      }
+      pageToken = classroomStudentsResponse.nextPageToken;
+    } while (pageToken);
+
+    if (masterClassroomStudents.length === 0) {
       throw new Error("No students found in the specified Google Classroom course.");
     }
+    
     const getUserIdByNameFromClassroom = {};
     const getFullNameByEmailFromClassroom = {};
-    classroomStudentsResponse.students.forEach(student => {
+    masterClassroomStudents.forEach(student => {
       getUserIdByNameFromClassroom[student.profile.name.fullName] = student.userId;
       getFullNameByEmailFromClassroom[student.profile.emailAddress] = student.profile.name.fullName;
     });
@@ -1102,11 +1130,24 @@ function onFormSubmit_WebApp(e) {
     if (!submitterFullName) {
       try {
         const courseIdForSubmitterLookup = getCourseIdByName(courseNameForSubmitterLookup);
-        const classroomStudents = Classroom.Courses.Students.list(courseIdForSubmitterLookup).students;
-        if (classroomStudents) {
-          const studentProfile = classroomStudents.find(s => s.profile.emailAddress === respondentEmail);
-          if (studentProfile) submitterFullName = studentProfile.profile.name.fullName;
-        }
+        
+        let fallbackClassroomStudents = [];
+        let pageToken = null;
+        
+        do {
+          let optionalArgs = { pageSize: 100 };
+          if (pageToken) optionalArgs.pageToken = pageToken;
+          
+          let response = Classroom.Courses.Students.list(courseIdForSubmitterLookup, optionalArgs);
+          if (response.students) {
+            fallbackClassroomStudents = fallbackClassroomStudents.concat(response.students);
+          }
+          pageToken = response.nextPageToken;
+        } while (pageToken);
+        
+        const studentProfile = fallbackClassroomStudents.find(s => s.profile.emailAddress === respondentEmail);
+        if (studentProfile) submitterFullName = studentProfile.profile.name.fullName;
+        
       } catch (err) {
         logErrorToDeveloperSheet(respondentEmail, formId, "onFormSubmit_WebApp Warning", `Could not map email ${respondentEmail} for course "${courseNameForSubmitterLookup}" via list. Error: ${err.message}`, `Form Title: ${form.getTitle()}`, activeSpreadsheetId);
       }
